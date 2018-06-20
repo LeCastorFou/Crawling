@@ -11,66 +11,69 @@ import plotly
 import plotly.plotly as py
 import plotly.graph_objs as go
 
-data = pd.read_csv("/home/valentin/GitHub/data/CrawlerCitroen.csv")
+data = pd.read_csv("/home/valentin/GitHub/data/CrawlerFord.csv")
 #data = pd.read_csv("Q:\ProjetsInternes\PricingVO\donnees\CrawlerCitroen.csv",encoding="utf-8")
 #data['mode'].unique()
 #len(data['version'].unique())
-data = data.drop(data.columns[0], axis=1)
-data = data.drop(data.columns[0], axis=1)
 
+data = data.drop(data.columns[0], axis=1)
 
 ####################
 ## PLOTING ZONE ####
 ####################
+data
 
-#data
-#data_sub = data[data['mode']=="CITROEN DS4"]
-#plt.plot(data_sub['prix'],data_sub['km'],'ro')
-#plt.show()
+data_sub = data[data['mode']=="FORD FIESTA 5"]
+len(data_sub)
+data_sub
+plt.plot(data_sub.prix,data_sub.km,'ro')
+plt.show()
 
-#plt.plot(data_sub['prix'],data_sub['annee'],'ro')
-#plt.show()
+plt.plot(data_sub['prix'],data_sub['annee'],'ro')
+plt.show()
 
-#plotly.tools.set_credentials_file(username='valentin.lefranc', api_key='Xb0HU4LGnX8h3COhUgJr')
+plotly.tools.set_credentials_file(username='valentin.lefranc', api_key='Xb0HU4LGnX8h3COhUgJr')
 
-#len(data_sub)
-#data_sub.columns
-#data_subtrain = data_sub[1:1000]
-data_subtest = data_sub[1001:1032]
+len(data_sub)
+data_sub.columns
+msk = np.random.rand(len(data_sub)) < 0.8
+data_subtrain = data_sub[msk]
+data_subtest = data_sub[~msk]
 
-
+len(data_subtrain)
 ############# Random RandomForest
-#features = data_subtrain.columns[[3,4,5,7]]
-#y = data_subtrain['prix']
-#clf = RandomForestRegressor(n_estimators=20)
-#clf.fit(data_subtrain[features], y)
-#y_test = data_subtest['prix']
+features = data_subtrain.columns[[3,4,5,7]]
+y = data_subtrain['prix']
+clf = RandomForestRegressor(n_estimators=20)
+clf.fit(data_subtrain[features], y)
+y_test = data_subtest['prix']
 
-#data_subtest['prediction'] = clf.predict(data_subtest[features])
-#data_subtest['error'] = (data_subtest['prix'] - clf.predict(data_subtest[features]))/data_subtest['prix']
-#hist = [go.Histogram(x=data_subtest['error'])]
-#py.iplot(hist, filename='basic histogram')
+data_subtest['prediction'] = clf.predict(data_subtest[features])
+data_subtest['error'] = (data_subtest['prix'] - clf.predict(data_subtest[features]))/data_subtest['prix']
+hist = [go.Histogram(x=data_subtest['error'])]
+py.iplot(hist, filename='basic histogram')
 
-#Emoy = np.sum( abs(data_subtest['error']) )/len(data_subtest.index)
-#Emoy
+
+Emoy = np.sum( abs(data_subtest['error']) )/len(data_subtest.index)
+Emoy
 
 ############# Regression linear
-#features = data_subtrain.columns[[3,4,5,7]]
-#y = data_subtrain['prix']
-#clf = linear_model.LinearRegression()
-#clf.fit(data_subtrain[features], y)
-#y_test = data_subtest['prix']
+features = data_subtrain.columns[[3,4,5,7]]
+y = data_subtrain['prix']
+clf = linear_model.LinearRegression()
+clf.fit(data_subtrain[features], y)
+y_test = data_subtest['prix']
 
-#data_subtest['prediction'] = clf.predict(data_subtest[features])
-#data_subtest['error'] = (data_subtest['prix'] - clf.predict(data_subtest[features]))/data_subtest['prix']
-#hist = [go.Histogram(x=data_subtest['error'])]
-#py.iplot(hist, filename='basic histogram')
+data_subtest['prediction'] = clf.predict(data_subtest[features])
+data_subtest['error'] = (data_subtest['prix'] - clf.predict(data_subtest[features]))/data_subtest['prix']
+hist = [go.Histogram(x=data_subtest['error'])]
+py.iplot(hist, filename='basic histogram')
 
-#Emoy = np.sum( abs(data_subtest['error']) )/len(data_subtest.index)
-#Emoy
+Emoy = np.sum( abs(data_subtest['error']) )/len(data_subtest.index)
+Emoy
 
 
-## Mot clef pour les versions citroen
+## Mot clef pour les versions
 Nver = np.array(data['version'])
 Allkeyw = Nver[1].split(" ")
 
